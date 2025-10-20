@@ -7,6 +7,10 @@ form {
     width: 800px;
 }
 
+fieldset {
+    border: none;
+}
+
 input,
 button {
     cursor: pointer;
@@ -18,7 +22,7 @@ button {
 }
 
 .answers {
-    margin: 20px;
+    margin: 20px auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
