@@ -1,14 +1,9 @@
-{
-    "id": "2226",
-    "content": "",
-    "start": true,
-    "check_answer": 1,
-    "show_results": 1,
-    "meta": {
-        "access": 1,
-        "status": 2,
-        "marks": 0,
+export const questions = {
+        "right": 0,
+        "wrong": 0,
+        "progress": 0,
         "max": 729,
+        "retakes": 550,
         "questions": [
             {
                 "type": "single",
@@ -17394,16 +17389,4 @@
                 "key": "oi7RK7UD"
             }
         ],
-        "auto": 1,
-        "retakes": 550,
-        "completion_message": "<div class=\"vibe_editor_rich_text\">\r\n\r\n&nbsp;\r\n\r\n</div>",
-        "duration": 2678400
-    },
-    "partial_marking": "on",
-    "negative_marking": 0,
-    "negative_marks": 0,
-    "question_number": "1",
-    "quiz_passing_score": 729,
-    "show_advance_stats": 1,
-    "remaining": 1894352
-}
+    };
