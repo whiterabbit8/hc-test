@@ -3,7 +3,7 @@ body {
     justify-content: center;
 }
 
-form {
+.question-wrapper {
     width: 800px;
 }
 
