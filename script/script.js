@@ -1,25 +1,42 @@
 import { questions } from "./questions.js";
 
-const prevBtn = document.querySelector('.prev-btn');
-const nextBtn = document.querySelector('.next-btn');
-const submitBtn = document.querySelector('.submit-btn');
-const questionsList = document.querySelector('.questions');
-const answers = document.querySelector('.answers');
 let currentQuestion = 0;
-let currentAnswer = 0;
+let currentAnswer;
+let questionsProgress;
 
-const addQuestionsNumbers = () => {
-    const quantity = questions.max;
-    const questionsWrapper = document.querySelector('.questions');
-    for (let i = 1; i <= quantity; i++) {
-        questionsWrapper.insertAdjacentHTML(
-            'beforeend',
-            `<div class="question" question-id="${i}">В${i}</div>`
-        )
+const getStorage = () => {
+    if (localStorage.getItem('questionsProgress')) {
+        questionsProgress = JSON.parse(localStorage.getItem('questionsProgress'));
+    } else {
+        questionsProgress = new Array(questions.max).fill(0);
     }
 }
 
-const loadQuestion = (number = currentQuestion) => {
+export const addQuestionsNumbers = () => {
+    getStorage();
+    const quantity = questions.max;
+    const questionsWrapper = document.querySelector('.questions');
+    for (let i = 0; i < quantity; i++) {
+        if (questionsProgress[i] === 'true') {
+            questionsWrapper.insertAdjacentHTML(
+                'beforeend',
+                `<div class="question right" question-id="${i+1}">В${i+1}</div>`
+            )
+        } else if (questionsProgress[i] === 'false') {
+            questionsWrapper.insertAdjacentHTML(
+                'beforeend',
+                `<div class="question wrong" question-id="${i+1}">В${i+1}</div>`
+            )
+        } else {
+            questionsWrapper.insertAdjacentHTML(
+                'beforeend',
+                `<div class="question" question-id="${i+1}">В${i+1}</div>`
+            )
+        }
+    }
+}
+
+export const loadQuestion = (number = currentQuestion) => {
     const question = questions.questions[number].content;
     const answers = questions.questions[number].options;
     const questionElement = document.querySelector('.legend');
@@ -39,21 +56,21 @@ const loadQuestion = (number = currentQuestion) => {
     }    
 }
 
-const nextQuestion = () => {
+export const nextQuestion = () => {
     if (currentQuestion != questions.max - 1) {
         currentQuestion += 1;
     }
     loadQuestion();
 }
 
-const prevQuestion = () => {
+export const prevQuestion = () => {
     if (currentQuestion != 0) {
         currentQuestion -=1;
     }
     loadQuestion();
 }
 
-const chooseQuestion = (event) => {
+export const chooseQuestion = (event) => {
     const question = event.target.closest('.question');
     if (!question) return;
 
@@ -62,34 +79,37 @@ const chooseQuestion = (event) => {
     loadQuestion(questionNumber);    
 }
 
-const chooseAnswer = (event) => {
+export const chooseAnswer = (event) => {
     const answer = event.target.closest('.answer');
     if (!answer) return;
 
     currentAnswer = Number(answer.getAttribute('answer-id'));
 }
 
-const checkAnswer = () => {
-    const rightAnswer = questions.questions[currentQuestion].correct_indexes[0];
+export const checkAnswer = () => {
+    const rightAnswer = questions.questions[currentQuestion].correct;
     const checkedAnswer = document.querySelectorAll('.answer')[currentAnswer];
     const checkedQuestion = document.querySelectorAll('.question')[currentQuestion];    
 
     if (currentAnswer === rightAnswer) {
         checkedAnswer.classList.add('right');
         checkedQuestion.classList.add('right');
+        questionsProgress[currentQuestion] = 'true';
     } else {
         checkedAnswer.classList.add('wrong');
         checkedQuestion.classList.add('wrong');
         document.querySelectorAll('.answer')[rightAnswer].classList.add('right');
+        questionsProgress[currentQuestion] = 'false';
     }
+    setStorage();
 }
 
-prevBtn.addEventListener('click', prevQuestion);
-nextBtn.addEventListener('click', nextQuestion);
-questionsList.addEventListener('click', chooseQuestion);
-answers.addEventListener('click', chooseAnswer);
-submitBtn.addEventListener('click', checkAnswer);
+export const countProgress = () => {
+    const progressElement = document.querySelector('.progress');
+    const rightQuantity = questionsProgress.filter((item) => item === 'true').length;
+    progressElement.innerHTML = `${(rightQuantity * 100 / questions.max).toFixed(2)}%`;
+}
 
-
-addQuestionsNumbers();
-loadQuestion();
+const setStorage = () => {
+    localStorage.setItem('questionsProgress', JSON.stringify(questionsProgress));
+}
