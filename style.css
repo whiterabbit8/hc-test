@@ -74,3 +74,11 @@ button {
 .question.wrong {
     background-color: #ff8686;
 }
+
+.answer.right {
+    color: green;
+}
+
+.answer.wrong {
+    color: red;
+}

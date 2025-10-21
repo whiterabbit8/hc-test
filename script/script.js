@@ -2,8 +2,11 @@ import { questions } from "./questions.js";
 
 const prevBtn = document.querySelector('.prev-btn');
 const nextBtn = document.querySelector('.next-btn');
+const submitBtn = document.querySelector('.submit-btn');
 const questionsList = document.querySelector('.questions');
+const answers = document.querySelector('.answers');
 let currentQuestion = 0;
+let currentAnswer = 0;
 
 const addQuestionsNumbers = () => {
     const quantity = questions.max;
@@ -28,7 +31,7 @@ const loadQuestion = (number = currentQuestion) => {
     for (let i = 0; i < answers.length; i++) {
         answersElement.insertAdjacentHTML(
         'beforeend',
-        `<div class="answer">
+        `<div class="answer" answer-id="${i}">
             <input type="radio" id="answer${i}" name="answer" value="answer${i}" />
             <label for="answer${i}">${answers[i]}</label>
         </div>`
@@ -55,12 +58,38 @@ const chooseQuestion = (event) => {
     if (!question) return;
 
     const questionNumber = Number(question.getAttribute('question-id')) - 1;
-    loadQuestion(questionNumber);
+    currentQuestion = questionNumber;
+    loadQuestion(questionNumber);    
+}
+
+const chooseAnswer = (event) => {
+    const answer = event.target.closest('.answer');
+    if (!answer) return;
+
+    currentAnswer = Number(answer.getAttribute('answer-id'));
+}
+
+const checkAnswer = () => {
+    const rightAnswer = questions.questions[currentQuestion].correct_indexes[0];
+    const checkedAnswer = document.querySelectorAll('.answer')[currentAnswer];
+    const checkedQuestion = document.querySelectorAll('.question')[currentQuestion];    
+
+    if (currentAnswer === rightAnswer) {
+        checkedAnswer.classList.add('right');
+        checkedQuestion.classList.add('right');
+    } else {
+        checkedAnswer.classList.add('wrong');
+        checkedQuestion.classList.add('wrong');
+        document.querySelectorAll('.answer')[rightAnswer].classList.add('right');
+    }
 }
 
 prevBtn.addEventListener('click', prevQuestion);
 nextBtn.addEventListener('click', nextQuestion);
 questionsList.addEventListener('click', chooseQuestion);
+answers.addEventListener('click', chooseAnswer);
+submitBtn.addEventListener('click', checkAnswer);
+
 
 addQuestionsNumbers();
 loadQuestion();
